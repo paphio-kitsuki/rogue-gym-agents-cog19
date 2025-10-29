@@ -26,7 +26,6 @@ For example, if you want to use PyTorch 1.0.0, specify `torch = '==1.0'` in Pipf
 
 3. Create the virtual env
 ```
-pipenv --site-package --three
 pipenv install
 ```
 
