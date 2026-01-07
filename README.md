@@ -43,15 +43,14 @@ python agents/ppo_naturecnn.py train
 ```bash
 python agents/ppo_impalacnn.py train
 ```
-pipenv run python agents/ppo_impalacnn.py train
-```
+
 - PPO with β-VAE feature extractor(β is hard coded in the file)
-```
+```bash
 python agents/vae_ppo.py train
 ```
 
 ### Evaluate agents
-```
+```bash
 python agents/eval_seeds.py --logdir=$YOUR_LOD_DIR
 ```
 
