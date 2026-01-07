@@ -16,18 +16,17 @@ ResNet + L2 regularization + 40 training seeds
 ![Generalized](pictures/generalized.gif)
 
 ## Setup
-1. Install pipenv
-```
-pip3 install pipenv -U --user
+1. Create and activate virtual environment
+```bash
+python3 -m venv venv38
+source venv38/bin/activate
 ```
 
-2. (Optional) Modify Pipfile
-For example, if you want to use PyTorch 1.0.0, specify `torch = '==1.0'` in Pipfile.
-
-3. Create the virtual env
-```
-pipenv --site-package --three
-pipenv install
+2. Install dependencies
+```bash
+pip install -r requirements.txt
+# Or install manually:
+# pip install torch numpy gym rogue-gym rainy
 ```
 
 ## Usage
@@ -36,20 +35,23 @@ edit the file to change the experiment setting.
 
 ### Train agents
 - PPO with nature CNN
+```bash
+python agents/ppo_naturecnn.py train
 ```
-pipenv run python agents/ppo_naturecnn.py train
-```
+
 - PPO with impala CNN
+```bash
+python agents/ppo_impalacnn.py train
 ```
 pipenv run python agents/ppo_impalacnn.py train
 ```
 - PPO with β-VAE feature extractor(β is hard coded in the file)
 ```
-pipenv run python agents/vae_ppo.py train
+python agents/vae_ppo.py train
 ```
 
 ### Evaluate agents
 ```
-pipenv run python agents/eval_seeds.py --logdir=$YOUR_LOD_DIR
+python agents/eval_seeds.py --logdir=$YOUR_LOD_DIR
 ```
 

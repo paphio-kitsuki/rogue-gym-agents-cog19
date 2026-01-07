@@ -8,7 +8,12 @@ click = '>=7.0'
 numpy = '>=1.15'
 rainy = '==0.1.0'
 torch = '>=1.0'
-rogue_gym = '==0.0.2'
+gym = '==0.23.1'
+rogue_gym = {path = "../rogue-gym/python"}
+atari-py = "==0.2.9"
+
+[requires]
+python_version = "3.8"
 
 [dev-packages]
 pytest = '>=3.0'

@@ -1,11 +1,11 @@
 from numpy import ndarray
-from rainy.net import ActorCriticNet, LinearHead, DummyRnn
+from rainy.net import ActorCriticNet, LinearHead, DummyRnn, RnnState
 from rainy.net.init import Initializer, orthogonal
 from rainy.net.policy import CategoricalHead, Policy
 from rainy.utils import Device
 import torch
 from torch import nn, Tensor
-from typing import List, NamedTuple, Tuple, Union
+from typing import List, NamedTuple, Optional, Tuple, Union
 
 CNN_INIT = Initializer(nonlinearity='relu')
 
@@ -100,11 +100,29 @@ class VaeActorCriticNet(ActorCriticNet):
         h = self.encoder(self.device.tensor(x))
         return self.z_fc(h)
 
-    def value(self, states: Union[ndarray, Tensor]) -> Tensor:
+    def value(
+            self,
+            states: Union[ndarray, Tensor],
+            rnns: Optional[RnnState] = None,
+            masks: Optional[Tensor] = None,
+    ) -> Tensor:
+        # Compatibility with Rainy (A2cAgent.eval_action / PpoAgent).
+        # This net doesn't use rnns/masks, but we accept them to avoid runtime errors.
+        _ = (rnns, masks)
         return self.critic(self.latent(states)).squeeze()
 
-    def policy(self, states: Union[ndarray, Tensor]) -> Policy:
-        return self.policy_head(self.actor(self.latent(states)))
+    def policy(
+            self,
+            states: Union[ndarray, Tensor],
+            rnns: Optional[RnnState] = None,
+            masks: Optional[Tensor] = None,
+    ) -> Tuple[Policy, RnnState]:
+        # Compatibility with Rainy (A2cAgent.eval_action expects (policy, next_rnn)).
+        _ = masks
+        if rnns is None:
+            batch_size = states.shape[0]
+            rnns = self.recurrent_body.initial_state(int(batch_size), self.device)
+        return self.policy_head(self.actor(self.latent(states))), rnns
 
     def p_and_v(self, states: Union[ndarray, Tensor]) -> Tuple[Policy, Tensor]:
         latent = self.latent(states)
